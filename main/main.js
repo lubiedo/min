@@ -28,6 +28,7 @@ if (process.argv.some(arg => arg === '-v' || arg === '--version')) {
 
 let isInstallerRunning = false
 const isDevelopmentMode = process.argv.some(arg => arg === '--development-mode')
+const isPrivateMode = process.argv.some(arg => arg === '--private')
 
 function clamp (n, min, max) {
   return Math.max(Math.min(n, max), min)
@@ -106,13 +107,8 @@ function handleCommandLineArguments (argv) {
   if (argv) {
     argv.forEach(function (arg, idx) {
       if (arg && arg.toLowerCase() !== __dirname.toLowerCase()) {
-        // URL
-        if (arg.indexOf('://') !== -1) {
-          sendIPCToWindow(mainWindow, 'addTab', {
-            url: arg
-          })
-        } else if (idx > 0 && argv[idx - 1] === '-s') {
-          // search
+        // URL or search
+        if (arg.indexOf('://') !== -1 || (idx > 0 && argv[idx - 1] === '-s')) {
           sendIPCToWindow(mainWindow, 'addTab', {
             url: arg
           })
@@ -191,7 +187,8 @@ function createWindowWithBounds (bounds) {
       additionalArguments: [
         '--user-data-path=' + userDataPath,
         '--app-version=' + app.getVersion(),
-        ...((isDevelopmentMode ? ['--development-mode'] : []))
+        ...(isDevelopmentMode ? ['--development-mode'] : []),
+        ...(isPrivateMode ? ['--private'] : [])
       ]
     }
   })

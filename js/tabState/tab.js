@@ -17,7 +17,7 @@ class TabList {
       id: tabId,
       lastActivity: tab.lastActivity || Date.now(),
       secure: tab.secure,
-      private: tab.private || false,
+      private: tab.private ||  'private' in window.globalArgs || false,
       readerable: tab.readerable || false,
       themeColor: tab.themeColor,
       backgroundColor: tab.backgroundColor,
@@ -176,7 +176,7 @@ class TabList {
       Object.keys(tab)
       .filter(key => !TabList.temporaryProperties.includes(key))
       .forEach(key => result[key] = tab[key])
-      
+
       return result
   }
 

@@ -32,6 +32,10 @@ Was permission already granted for this tab and URL?
 function isPermissionGrantedForContents (requestContents, requestPermission, requestDetails) {
   var requestOrigin = new URL(requestDetails.requestingUrl).hostname
 
+  if (requestPermission === 'clipboard-sanitized-write') {
+    return true
+  }
+
   for (var i = 0; i < grantedPermissions.length; i++) {
     var grantedOrigin = new URL(grantedPermissions[i].details.requestingUrl).hostname
 
